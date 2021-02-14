@@ -27,7 +27,7 @@ The following was completed:
 > x
 
 # Project Visual :metal:
-xx
+[110-lesson-mockup](https://user-images.githubusercontent.com/77648727/107865460-74579000-6e1b-11eb-8491-b2b3021ec493.gif)
 
 # Authors, Acknowledgement, & Resources :handshake:
 ### Teaching Crew at UCB Coding Bootcamp :tada:
