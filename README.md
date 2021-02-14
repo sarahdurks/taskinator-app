@@ -1,6 +1,6 @@
 
 # Name 
-UC Berkeley's Coding Bootcamp Taskinator assignment
+'Taskinator' Task Management assignment for UC Berkeley's Coding Bootcamp
 
 ### Live Application Link :eyes:
 See live application 
