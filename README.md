@@ -3,7 +3,7 @@
 'Taskinator' Task Management assignment for UC Berkeley's Coding Bootcamp
 
 ### Live Application Link :eyes:
-See live application 
+See live application [here](https://sarahdurks.github.io/taskinator-app/)
 
 ### Built With :toolbox: 
 - HTML
@@ -13,18 +13,15 @@ See live application
 # Description 
 A task-tracker app called Taskinator. Taskinator will allow you to organize your personal to-do list items by using a dropdown menu to change the task status and move the task into To Do, In Progress, and Completed lists.
 
-The following was completed:
+## Features
 
-- [x] a
-- [x] b
-- [x] c
+- Users can add new tasks and select a task types
+- Tasks are added to the "To Do" list
+- Tasks can be kept permanently, edited or removed 
+- Users can update the status of their task to "In Progress" or "Task Completed" via menu section or drag-and-drop functionality
+- Tasks are saved in the user's local storage and will reload upon refreshing the page
+- Application is responsive
 
-## User Story
-
-> x
-## Acceptance Criteria
-
-> x
 
 # Project Visual :metal:
 ![110-lesson-mockup](https://user-images.githubusercontent.com/77648727/107865460-74579000-6e1b-11eb-8491-b2b3021ec493.gif)
@@ -32,6 +29,9 @@ The following was completed:
 # Authors, Acknowledgement, & Resources :handshake:
 ### Teaching Crew at UCB Coding Bootcamp :tada:
 [Learn More about Bootcamp Program](https://bootcamp.berkeley.edu/coding/) 
+
+### W3C Schools
+[W3C School HTML Resources](shttps://www.w3schools.com/html/html5_draganddrop.asp)
 
 ### CSS Tricks :boom:
 [A Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox),
