@@ -31,7 +31,7 @@ A task-tracker app called Taskinator. Taskinator will allow you to organize your
 [Learn More about Bootcamp Program](https://bootcamp.berkeley.edu/coding/) 
 
 ### W3C Schools
-[W3C School HTML Resources](shttps://www.w3schools.com/html/html5_draganddrop.asp)
+[W3C School HTML Resources](https://www.w3schools.com/html/html5_draganddrop.asp)
 
 ### CSS Tricks :boom:
 [A Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox),
