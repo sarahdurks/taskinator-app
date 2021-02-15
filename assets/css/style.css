@@ -20,7 +20,6 @@ body {
   flex-direction: column;
   font-family:'Montserrat', sans-serif;
 }
-
 header {
   background: var(--secondary);
   padding: 30px 25px;
