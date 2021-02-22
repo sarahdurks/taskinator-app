@@ -1,7 +1,4 @@
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/77648727/107866546-ebdeec80-6e26-11eb-8fa7-d2c1eb6fddbd.png" alt="Logo" width="80" height="80">
-  <h3 align="center">Taskinator App README</h3>
-
+![Thumbnail (6)](https://user-images.githubusercontent.com/77648727/108649729-c4190580-7472-11eb-9f42-5c2ae4ff49b4.png)
 
 # Name 
 'Taskinator' Task Management assignment for UC Berkeley's Coding Bootcamp
