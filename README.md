@@ -1,10 +1,10 @@
+
 ![Frame 19](https://user-images.githubusercontent.com/77648727/109896640-1f52b100-7c46-11eb-88c7-ad694339bba3.png)
 
 # Name 
-UC Berkeley Coding Bootcamp Week 4 Homework 
+'Taskinator' Task Management assignment
+![Group 56 (1)](https://user-images.githubusercontent.com/77648727/109911642-4c5f8d80-7c5f-11eb-8f0a-4c0bef2ca9b4.png)
 
-
-'Taskinator' Task Management assignment for UC Berkeley's Coding Bootcamp
 
 ### Live Application Link :eyes:
 See live application [here](https://sarahdurks.github.io/taskinator-app/)
