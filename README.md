@@ -1,10 +1,7 @@
-![Thumbnail (6)](https://user-images.githubusercontent.com/77648727/108649729-c4190580-7472-11eb-9f42-5c2ae4ff49b4.png)
+![Frame 19](https://user-images.githubusercontent.com/77648727/109896640-1f52b100-7c46-11eb-88c7-ad694339bba3.png)
 
 # Name 
-
-
- |![image 16 (2)](https://user-images.githubusercontent.com/77648727/108654344-54f4de80-747d-11eb-9a16-12318f82e4a8.png)| UC Berkeley Coding Bootcamp <br> Week 4 Homework |
-|---|:---| 
+UC Berkeley Coding Bootcamp Week 4 Homework 
 
 
 'Taskinator' Task Management assignment for UC Berkeley's Coding Bootcamp
