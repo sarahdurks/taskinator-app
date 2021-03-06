@@ -1,282 +1,292 @@
-var taskIdCounter = 0;
+var tasks = {};
 
-var formEl = document.querySelector("#task-form");
-var tasksToDoEl = document.querySelector("#tasks-to-do");
-var tasksInProgressEl = document.querySelector("#tasks-in-progress");
-var tasksCompletedEl = document.querySelector("#tasks-completed");
-var pageContentEl = document.querySelector("#page-content");
+var createTask = function(taskText, taskDate, taskList) {
+  // create elements that make up a task item
+  var taskLi = $("<li>").addClass("list-group-item");
+  var taskSpan = $("<span>")
+    .addClass("badge badge-primary badge-pill")
+    .text(taskDate);
+  var taskP = $("<p>")
+    .addClass("m-1")
+    .text(taskText);
 
-// create array to hold tasks for saving
-var tasks = [];
+  // append span and p element to parent li
+  taskLi.append(taskSpan, taskP);
 
-var taskFormHandler = function (event) {
-  event.preventDefault();
-  var taskNameInput = document.querySelector("input[name='task-name']").value;
-  var taskTypeInput = document.querySelector("select[name='task-type']").value;
+  // check due date
+  auditTask(taskLi);
 
-  // check if inputs are empty (validate)
-  if (!taskNameInput || !taskTypeInput) {
-    alert("You need to fill out the task form!");
-    return false;
-  }
+  // append to ul list on the page
+  $("#list-" + taskList).append(taskLi);
+};
 
-  // reset form fields for next task to be entered
-  document.querySelector("input[name='task-name']").value = "";
-  document.querySelector("select[name='task-type']").selectedIndex = 0;
+var loadTasks = function() {
+  tasks = JSON.parse(localStorage.getItem("tasks"));
 
-  // check if task is new or one being edited by seeing if it has a data-task-id attribute
-  var isEdit = formEl.hasAttribute("data-task-id");
-
-  if (isEdit) {
-    var taskId = formEl.getAttribute("data-task-id");
-    completeEditTask(taskNameInput, taskTypeInput, taskId);
-  } else {
-    var taskDataObj = {
-      name: taskNameInput,
-      type: taskTypeInput,
-      status: "to do",
+  // if nothing in localStorage, create a new object to track all task status arrays
+  if (!tasks) {
+    tasks = {
+      toDo: [],
+      inProgress: [],
+      inReview: [],
+      done: []
     };
-
-    createTaskEl(taskDataObj);
-  }
-};
-
-var createTaskEl = function(taskDataObj) {
-  var listItemEl = document.createElement("li");
-  listItemEl.className = "task-item";
-  listItemEl.setAttribute("data-task-id", taskIdCounter);
-
-  var taskInfoEl = document.createElement("div");
-  taskInfoEl.className = "task-info";
-  taskInfoEl.innerHTML =
-    "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
-  listItemEl.appendChild(taskInfoEl);
-
-  var taskActionsEl = createTaskActions(taskIdCounter);
-  listItemEl.appendChild(taskActionsEl);
-
-  switch (taskDataObj.status) {
-    case "to do":
-      taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 0;
-      tasksToDoEl.append(listItemEl);
-      break;
-    case "in progress":
-      taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 1;
-      tasksInProgressEl.append(listItemEl);
-      break;
-    case "completed":
-      taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 2;
-      tasksCompletedEl.append(listItemEl);
-      break;
-    default:
-      console.log("Something went wrong!");
   }
 
-  // save task as an object with name, type, status, and id properties then push it into tasks array
-  taskDataObj.id = taskIdCounter;
-
-  tasks.push(taskDataObj);
-
-  // save tasks to localStorage
-  saveTasks();
-
-  // increase task counter for next unique task id
-  taskIdCounter++;
-};
-
-var createTaskActions = function (taskId) {
-  // create container to hold elements
-  var actionContainerEl = document.createElement("div");
-  actionContainerEl.className = "task-actions";
-
-  // create edit button
-  var editButtonEl = document.createElement("button");
-  editButtonEl.textContent = "Edit";
-  editButtonEl.className = "btn edit-btn";
-  editButtonEl.setAttribute("data-task-id", taskId);
-  actionContainerEl.appendChild(editButtonEl);
-  // create delete button
-  var deleteButtonEl = document.createElement("button");
-  deleteButtonEl.textContent = "Delete";
-  deleteButtonEl.className = "btn delete-btn";
-  deleteButtonEl.setAttribute("data-task-id", taskId);
-  actionContainerEl.appendChild(deleteButtonEl);
-  // create change status dropdown
-  var statusSelectEl = document.createElement("select");
-  statusSelectEl.setAttribute("name", "status-change");
-  statusSelectEl.setAttribute("data-task-id", taskId);
-  statusSelectEl.className = "select-status";
-  actionContainerEl.appendChild(statusSelectEl);
-  // create status options
-  var statusChoices = ["To Do", "In Progress", "Completed"];
-
-  for (var i = 0; i < statusChoices.length; i++) {
-    // create option element
-    var statusOptionEl = document.createElement("option");
-    statusOptionEl.setAttribute("value", statusChoices[i]);
-    statusOptionEl.textContent = statusChoices[i];
-
-    // append to select
-    statusSelectEl.appendChild(statusOptionEl);
-  }
-
-  return actionContainerEl;
-};
-
-var completeEditTask = function (taskName, taskType, taskId) {
-  // find task list item with taskId value
-  var taskSelected = document.querySelector(
-    ".task-item[data-task-id='" + taskId + "']"
-  );
-
-  // set new values
-  taskSelected.querySelector("h3.task-name").textContent = taskName;
-  taskSelected.querySelector("span.task-type").textContent = taskType;
-
-  // loop through tasks array and task object with new content
-  for (var i = 0; i < tasks.length; i++) {
-    if (tasks[i].id === parseInt(taskId)) {
-      tasks[i].name = taskName;
-      tasks[i].type = taskType;
-    }
-  }
-
-  alert("Task Updated!");
-
-  // remove data attribute from form
-  formEl.removeAttribute("data-task-id");
-  // update formEl button to go back to saying "Add Task" instead of "Edit Task"
-  formEl.querySelector("#save-task").textContent = "Add Task";
-  // save tasks to localStorage
-  saveTasks();
-};
-
-var taskButtonHandler = function (event) {
-  // get target element from event
-  var targetEl = event.target;
-
-  if (targetEl.matches(".edit-btn")) {
-    console.log("edit", targetEl);
-    var taskId = targetEl.getAttribute("data-task-id");
-    editTask(taskId);
-  } else if (targetEl.matches(".delete-btn")) {
-    console.log("delete", targetEl);
-    var taskId = targetEl.getAttribute("data-task-id");
-    deleteTask(taskId);
-  }
-};
-
-var taskStatusChangeHandler = function (event) {
-  console.log(event.target.value);
-
-  // find task list item based on event.target's data-task-id attribute
-  var taskId = event.target.getAttribute("data-task-id");
-
-  var taskSelected = document.querySelector(
-    ".task-item[data-task-id='" + taskId + "']"
-  );
-
-  // convert value to lower case
-  var statusValue = event.target.value.toLowerCase();
-
-  if (statusValue === "to do") {
-    tasksToDoEl.appendChild(taskSelected);
-  } else if (statusValue === "in progress") {
-    tasksInProgressEl.appendChild(taskSelected);
-  } else if (statusValue === "completed") {
-    tasksCompletedEl.appendChild(taskSelected);
-  }
-
-  // update task's in tasks array
-  for (var i = 0; i < tasks.length; i++) {
-    if (tasks[i].id === parseInt(taskId)) {
-      tasks[i].status = statusValue;
-    }
-  }
-
-  // save to localStorage
-  saveTasks();
-};
-
-var editTask = function (taskId) {
-  console.log(taskId);
-
-  // get task list item element
-  var taskSelected = document.querySelector(
-    ".task-item[data-task-id='" + taskId + "']"
-  );
-
-  // get content from task name and type
-  var taskName = taskSelected.querySelector("h3.task-name").textContent;
-  console.log(taskName);
-
-  var taskType = taskSelected.querySelector("span.task-type").textContent;
-  console.log(taskType);
-
-  // write values of taskName and taskType to form to be edited
-  document.querySelector("input[name='task-name']").value = taskName;
-  document.querySelector("select[name='task-type']").value = taskType;
-
-  // set data attribute to the form with a value of the task's id so it knows which one is being edited
-  formEl.setAttribute("data-task-id", taskId);
-  // update form's button to reflect editing a task rather than creating a new one
-  formEl.querySelector("#save-task").textContent = "Save Task";
-};
-
-var deleteTask = function (taskId) {
-  console.log(taskId);
-  // find task list element with taskId value and remove it
-  var taskSelected = document.querySelector(
-    ".task-item[data-task-id='" + taskId + "']"
-  );
-  taskSelected.remove();
-
-  // create new array to hold updated list of tasks
-  var updatedTaskArr = [];
-
-  // loop through current tasks
-  for (var i = 0; i < tasks.length; i++) {
-    // if tasks[i].id doesn't match the value of taskId, let's keep that task and push it into the new array
-    if (tasks[i].id !== parseInt(taskId)) {
-      updatedTaskArr.push(tasks[i]);
-    }
-  }
-
-  // reassign tasks array to be the same as updatedTaskArr
-  tasks = updatedTaskArr;
-  saveTasks();
+  // loop over object properties
+  $.each(tasks, function(list, arr) {
+    // then loop over sub-array
+    arr.forEach(function(task) {
+      createTask(task.text, task.date, list);
+    });
+  });
 };
 
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
-var loadTasks = function() {
-  var savedTasks = localStorage.getItem("tasks");
-  // if there are no tasks, set tasks to an empty array and return out of the function
-  if (!savedTasks) {
-    return false;
-  }
-  console.log("Saved tasks found!");
-  // else, load up saved tasks
+var auditTask = function(taskEl) {
+  // get date from task element
+  var date = $(taskEl)
+    .find("span")
+    .text()
+    .trim();
 
-  // parse into array of objects
-  savedTasks = JSON.parse(savedTasks);
+  // convert to moment object at 5:00pm
+  var time = moment(date, "L").set("hour", 17);
 
-  // loop through savedTasks array
-  for (var i = 0; i < savedTasks.length; i++) {
-    // pass each task object into the `createTaskEl()` function
-    createTaskEl(savedTasks[i]);
+  // remove any old classes from element
+  $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
+
+  // apply new class if task is near/over due date
+  if (moment().isAfter(time)) {
+    $(taskEl).addClass("list-group-item-danger");
+  } else if (Math.abs(moment().diff(time, "days")) <= 2) {
+    $(taskEl).addClass("list-group-item-warning");
   }
 };
 
-// Create a new task
-formEl.addEventListener("submit", taskFormHandler);
+// enable draggable/sortable feature on list-group elements
+$(".card .list-group").sortable({
+  // enable dragging across lists
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event, ui) {
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
+  },
+  deactivate: function(event, ui) {
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
+  },
+  over: function(event) {
+    $(event.target).addClass("dropover-active");
+  },
+  out: function(event) {
+    $(event.target).removeClass("dropover-active");
+  },
+  update: function() {
+    var tempArr = [];
 
-// for edit and delete buttons
-pageContentEl.addEventListener("click", taskButtonHandler);
+    // loop over current set of children in sortable list
+    $(this)
+      .children()
+      .each(function() {
+        // save values in temp array
+        tempArr.push({
+          text: $(this)
+            .find("p")
+            .text()
+            .trim(),
+          date: $(this)
+            .find("span")
+            .text()
+            .trim()
+        });
+      });
 
-// for changing the status
-pageContentEl.addEventListener("change", taskStatusChangeHandler);
+    // trim down list's ID to match object property
+    var arrName = $(this)
+      .attr("id")
+      .replace("list-", "");
 
+    // update array on tasks object and save
+    tasks[arrName] = tempArr;
+    saveTasks();
+  }
+});
+
+// trash icon can be dropped onto
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+  drop: function(event, ui) {
+    // remove dragged element from the dom
+    ui.draggable.remove();
+    $(".bottom-trash").removeClass("bottom-trash-active");
+  },
+  over: function(event, ui) {
+    console.log(ui);
+    $(".bottom-trash").addClass("bottom-trash-active");
+  },
+  out: function(event, ui) {
+    $(".bottom-trash").removeClass("bottom-trash-active");
+  }
+});
+
+// convert text field into a jquery date picker
+$("#modalDueDate").datepicker({
+  // force user to select a future date
+  minDate: 1
+});
+
+// modal was triggered
+$("#task-form-modal").on("show.bs.modal", function() {
+  // clear values
+  $("#modalTaskDescription, #modalDueDate").val("");
+});
+
+// modal is fully visible
+$("#task-form-modal").on("shown.bs.modal", function() {
+  // highlight textarea
+  $("#modalTaskDescription").trigger("focus");
+});
+
+// save button in modal was clicked
+$("#task-form-modal .btn-save").click(function() {
+  // get form values
+  var taskText = $("#modalTaskDescription").val();
+  var taskDate = $("#modalDueDate").val();
+
+  if (taskText && taskDate) {
+    createTask(taskText, taskDate, "toDo");
+
+    // close modal
+    $("#task-form-modal").modal("hide");
+
+    // save in tasks array
+    tasks.toDo.push({
+      text: taskText,
+      date: taskDate
+    });
+
+    saveTasks();
+  }
+});
+
+// task text was clicked
+$(".list-group").on("click", "p", function() {
+  // get current text of p element
+  var text = $(this)
+    .text()
+    .trim();
+
+  // replace p element with a new textarea
+  var textInput = $("<textarea>").addClass("form-control").val(text);
+  $(this).replaceWith(textInput);
+
+  // auto focus new element
+  textInput.trigger("focus");
+});
+
+// editable field was un-focused
+$(".list-group").on("blur", "textarea", function() {
+  // get current value of textarea
+  var text = $(this).val();
+
+  // get status type and position in the list
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+  // update task in array and re-save to localstorage
+  tasks[status][index].text = text;
+  saveTasks();
+
+  // recreate p element
+  var taskP = $("<p>")
+    .addClass("m-1")
+    .text(text);
+
+  // replace textarea with new content
+  $(this).replaceWith(taskP);
+});
+
+// due date was clicked
+$(".list-group").on("click", "span", function() {
+  // get current text
+  var date = $(this)
+    .text()
+    .trim();
+
+  // create new input element
+  var dateInput = $("<input>")
+    .attr("type", "text")
+    .addClass("form-control")
+    .val(date);
+  $(this).replaceWith(dateInput);
+
+  // enable jquery ui date picker
+  dateInput.datepicker({
+    minDate: 1,
+    onClose: function() {
+      // when calendar is closed, force a "change" event
+      $(this).trigger("change");
+    }
+  });
+
+  // automatically bring up the calendar
+  dateInput.trigger("focus");
+});
+
+// value of due date was changed
+$(".list-group").on("change", "input[type='text']", function() {
+  var date = $(this).val();
+
+  // get status type and position in the list
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+  // update task in array and re-save to localstorage
+  tasks[status][index].date = date;
+  saveTasks();
+
+  // recreate span and insert in place of input element
+  var taskSpan = $("<span>")
+    .addClass("badge badge-primary badge-pill")
+    .text(date);
+    $(this).replaceWith(taskSpan);
+    auditTask($(taskSpan).closest(".list-group-item"));
+});
+
+// remove all tasks
+$("#remove-tasks").on("click", function() {
+  for (var key in tasks) {
+    tasks[key].length = 0;
+    $("#list-" + key).empty();
+  }
+  console.log(tasks);
+  saveTasks();
+});
+
+// load tasks for the first time
 loadTasks();
+
+// audit task due dates every 30 minutes
+setInterval(function() {
+  $(".card .list-group-item").each(function() {
+    auditTask($(this));
+  });
+}, 1800000);
