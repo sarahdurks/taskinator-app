@@ -4,7 +4,7 @@
 # Name 
 'Taskinator' Task Management assignment     
 
-![Group 56 (1)](https://user-images.githubusercontent.com/77648727/109911642-4c5f8d80-7c5f-11eb-8f0a-4c0bef2ca9b4.png)
+![Taskmaster Pro](https://user-images.githubusercontent.com/77648727/110224966-5965c200-7e95-11eb-8ad3-504cbd0808c2.gif)
 
 
 ### Live Application Link :eyes:
