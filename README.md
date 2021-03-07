@@ -4,8 +4,6 @@
 # Name 
 'Taskinator' Task Management assignment     
 
-![Taskmaster Pro](https://user-images.githubusercontent.com/77648727/110224966-5965c200-7e95-11eb-8ad3-504cbd0808c2.gif)
-
 
 ### Live Application Link :eyes:
 See live application [here](https://sarahdurks.github.io/taskinator-app/)
@@ -29,7 +27,8 @@ A task-tracker app called Taskinator. Taskinator will allow you to organize your
 
 
 # Project Visual :metal:
-![110-lesson-mockup](https://user-images.githubusercontent.com/77648727/107865460-74579000-6e1b-11eb-8491-b2b3021ec493.gif)
+
+![Taskmaster Pro](https://user-images.githubusercontent.com/77648727/110224966-5965c200-7e95-11eb-8ad3-504cbd0808c2.gif)
 
 # Authors, Acknowledgement, & Resources :handshake:
 ### Teaching Crew at UCB Coding Bootcamp :tada:
